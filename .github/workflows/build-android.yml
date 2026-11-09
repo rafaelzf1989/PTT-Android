@@ -13,15 +13,43 @@ jobs:
     - name: Checkout del código
       uses: actions/checkout@v4
 
-    - name: Compilar APK con Buildozer
-      uses: ArtemSBulgakov/buildozer-action@v1
-      id: buildozer
+    - name: Configurar Java 17
+      uses: actions/setup-java@v4
       with:
-        command: buildozer android debug
-        buildozer_version: stable
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Instalar dependencias del sistema para Buildozer
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          git zip unzip openjdk-17-jdk python3-pip \
+          autoconf libtool pkg-config zlib1g-dev \
+          libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+
+    - name: Instalar Buildozer y Cython
+      run: |
+        pip3 install --user --upgrade buildozer
+        pip3 install --user --upgrade cython==0.29.34
+
+    - name: Cache de Buildozer
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.buildozer
+          ~/.gradle
+        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+        restore-keys: |
+          ${{ runner.os }}-buildozer-
+
+    - name: Compilar APK con Buildozer
+      run: |
+        # Desactiva la confirmación interactiva para aceptar las licencias de Android
+        export APP_ANDROID_ACCEPT_SDK_LICENSE=1
+        buildozer android debug
 
     - name: Subir APK como artefacto
       uses: actions/upload-artifact@v4
       with:
         name: PTT-Client-APK
-        path: ${{ steps.buildozer.outputs.filename }}
+        path: bin/*.apk
