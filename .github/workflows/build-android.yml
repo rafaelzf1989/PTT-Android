@@ -24,18 +24,14 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
 
-    - name: Instalar Buildozer
+    - name: Instalar versiones FIJAS de Buildozer, Cython y sh
       run: |
-        pip3 install --user --upgrade buildozer
-        pip3 install --user --upgrade cython==0.29.34
+        pip3 install --user --upgrade "buildozer==1.5.0"
+        pip3 install --user --upgrade "Cython==0.29.36"
+        pip3 install --user --upgrade "sh<2.0"
 
-    - name: Guardar caché
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.buildozer
-          ~/.gradle
-        key: buildozer-cache
+    # ELIMINAMOS EL CACHÉ A PROPÓSITO.
+    # Un caché viejo puede estar mezclando versiones nuevas con viejas y rompiendo todo.
 
     - name: Compilar APK
       run: |
