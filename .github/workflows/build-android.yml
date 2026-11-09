@@ -7,41 +7,25 @@ on:
 
 jobs:
   build-android:
-    runs-on: ubuntu-latest
+    # La clave: usamos Ubuntu 22.04, que es estable y tiene todo lo necesario
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout del código
       uses: actions/checkout@v4
 
-    - name: Configurar Java 17
-      uses: actions/setup-java@v4
+    - name: Compilar APK con Buildozer (acción probada)
+      uses: ArtemSBulgakov/buildozer-action@v1
+      id: buildozer
       with:
-        distribution: 'temurin'
-        java-version: '17'
+        # Comando estándar para compilar en modo debug
+        command: buildozer android debug
+        # Usamos una versión estable de Buildozer
+        buildozer_version: 1.5.0
 
-    - name: Instalar dependencias (sin libtinfo5 de los repos)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
-
-    - name: Instalar libtinfo5 manualmente (versión 0.1)
-      run: |
-        wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
-        sudo apt install -y ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
-
-    - name: Instalar versiones FIJAS de Buildozer, Cython y sh
-      run: |
-        pip3 install --user --upgrade "buildozer==1.5.0"
-        pip3 install --user --upgrade "Cython==0.29.36"
-        pip3 install --user --upgrade "sh<2.0"
-
-    - name: Compilar APK
-      run: |
-        export APP_ANDROID_ACCEPT_SDK_LICENSE=1
-        buildozer android debug
-
-    - name: Guardar APK
+    - name: Guardar APK como artefacto
       uses: actions/upload-artifact@v4
       with:
         name: PTT-Client-APK
-        path: bin/*.apk
+        # La acción genera la ruta exacta del APK en este output
+        path: ${{ steps.buildozer.outputs.filename }}
