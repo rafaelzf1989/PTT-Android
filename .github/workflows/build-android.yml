@@ -19,36 +19,30 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Instalar dependencias del sistema para Buildozer
+    - name: Instalar dependencias
       run: |
         sudo apt-get update
-        sudo apt-get install -y \
-          git zip unzip openjdk-17-jdk python3-pip \
-          autoconf libtool pkg-config zlib1g-dev \
-          libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
 
-    - name: Instalar Buildozer y Cython
+    - name: Instalar Buildozer
       run: |
         pip3 install --user --upgrade buildozer
         pip3 install --user --upgrade cython==0.29.34
 
-    - name: Cache de Buildozer
+    - name: Guardar caché
       uses: actions/cache@v4
       with:
         path: |
           ~/.buildozer
           ~/.gradle
-        key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
-        restore-keys: |
-          ${{ runner.os }}-buildozer-
+        key: buildozer-cache
 
-    - name: Compilar APK con Buildozer
+    - name: Compilar APK
       run: |
-        # Desactiva la confirmación interactiva para aceptar las licencias de Android
         export APP_ANDROID_ACCEPT_SDK_LICENSE=1
         buildozer android debug
 
-    - name: Subir APK como artefacto
+    - name: Guardar APK
       uses: actions/upload-artifact@v4
       with:
         name: PTT-Client-APK
