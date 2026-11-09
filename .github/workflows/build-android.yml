@@ -24,10 +24,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
 
-    - name: Instalar libtinfo5 manualmente (paquete .deb)
+    - name: Instalar libtinfo5 manualmente (versión 0.1)
       run: |
-        wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_amd64.deb
-        sudo apt install -y ./libtinfo5_6.3-2ubuntu0.2_amd64.deb
+        wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
+        sudo apt install -y ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
     - name: Instalar versiones FIJAS de Buildozer, Cython y sh
       run: |
