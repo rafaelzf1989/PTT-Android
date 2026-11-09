@@ -7,25 +7,28 @@ on:
 
 jobs:
   build-android:
-    # La clave: usamos Ubuntu 22.04, que es estable y tiene todo lo necesario
+    # LA CLAVE: Usamos Ubuntu 22.04, que es estable y tiene libtinfo5
     runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout del código
       uses: actions/checkout@v4
 
+    - name: Configurar Python 3.9
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+
     - name: Compilar APK con Buildozer (acción probada)
       uses: ArtemSBulgakov/buildozer-action@v1
       id: buildozer
       with:
-        # Comando estándar para compilar en modo debug
         command: buildozer android debug
-        # Usamos una versión estable de Buildozer
+        # Fijamos una versión estable de Buildozer
         buildozer_version: 1.5.0
 
-    - name: Guardar APK como artefacto
+    - name: Guardar APK
       uses: actions/upload-artifact@v4
       with:
         name: PTT-Client-APK
-        # La acción genera la ruta exacta del APK en este output
         path: ${{ steps.buildozer.outputs.filename }}
