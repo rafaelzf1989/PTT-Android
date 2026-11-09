@@ -1,19 +1,41 @@
 [app]
+# Título de tu aplicación
 title = PTT Client
-package.name = pttclient
-package.domain = org.test
-source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
-version = 1.0
-requirements = python3,kivy
-orientation = portrait
-fullscreen = 1
 
-# ¡IMPORTANTE! Permisos para que funcione el socket en Android
+# Nombre del paquete (sin espacios)
+package.name = pttclient
+
+# Dominio del paquete (puede ser genérico)
+package.domain = org.test
+
+# Directorio donde está tu main.py (la raíz)
+source.dir = .
+
+# Tipos de archivos que se incluirán
+source.include_exts = py,png,jpg,kv,atlas
+
+# Versión de la aplicación
+version = 0.1
+
+# ¡AQUÍ ESTÁ LA CLAVE! Forzamos Python 3.10 y una versión estable de Kivy
+requirements = python3==3.10.12,kivy==2.3.0
+
+# Orientación de la pantalla
+orientation = portrait
+
+# Permiso de Internet, esencial para que funcionen los sockets
 android.permissions = INTERNET, ACCESS_NETWORK_STATE
 
+# Versiones de Android (API 33 es una versión moderna y compatible)
 android.api = 33
 android.minapi = 21
-android.ndk = 25b
+
+# Arquitecturas de los teléfonos (cubre la gran mayoría)
 android.archs = arm64-v8a, armeabi-v7a
+
+# Permite copias de seguridad
 android.allow_backup = True
+
+# Opciones de compilación
+[buildozer]
+log_level = 2
