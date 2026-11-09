@@ -19,19 +19,21 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Instalar dependencias
+    - name: Instalar dependencias (sin libtinfo5 de los repos)
       run: |
         sudo apt-get update
-        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev
+
+    - name: Instalar libtinfo5 manualmente (paquete .deb)
+      run: |
+        wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_amd64.deb
+        sudo apt install -y ./libtinfo5_6.3-2ubuntu0.2_amd64.deb
 
     - name: Instalar versiones FIJAS de Buildozer, Cython y sh
       run: |
         pip3 install --user --upgrade "buildozer==1.5.0"
         pip3 install --user --upgrade "Cython==0.29.36"
         pip3 install --user --upgrade "sh<2.0"
-
-    # ELIMINAMOS EL CACHÉ A PROPÓSITO.
-    # Un caché viejo puede estar mezclando versiones nuevas con viejas y rompiendo todo.
 
     - name: Compilar APK
       run: |
